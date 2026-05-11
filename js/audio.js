@@ -40,6 +40,20 @@ const DEFAULT_ADSR = {
   release: 0.25,   /* shorter release so chords dont bleed into each other */
 };
 
+/* per-waveform gain scaling — square + sawtooth have way more harmonic
+   content so they sound much louder at the same amplitude. scale them
+   down so all waveforms feel roughly equal loudness */
+const WAVEFORM_GAIN = {
+  sine:     1.0,
+  triangle: 0.85,
+  sawtooth: 0.35,
+  square:   0.3,
+};
+
+function gainForWaveform(wave) {
+  return WAVEFORM_GAIN[wave] ?? 1.0;
+}
+
 /* apply adsr to a gainNode
    duration is the held time before release begins
    leaves a gap before the next chord to avoid overlap clicks */
@@ -92,10 +106,11 @@ export function playNote(freq, startTime, duration, waveform = "triangle", adsr 
 export function playChord(pitchClasses, startTime, duration, octave = 4, waveform = "triangle") {
   const ac = getContext();
 
-  /* master gain so whole chord has unified volume */
+  /* master gain so whole chord has unified volume
+     also scales by waveform — square + saw are way louder than sine/tri */
   const master = ac.createGain();
-  /* scale down so stacked oscs don't clip */
-  master.gain.setValueAtTime(1 / Math.sqrt(pitchClasses.length), startTime);
+  const waveScale = gainForWaveform(waveform);
+  master.gain.setValueAtTime(waveScale / Math.sqrt(pitchClasses.length), startTime);
   master.connect(getMaster());
 
   const oscs = pitchClasses.map(pc => {
