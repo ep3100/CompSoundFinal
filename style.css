@@ -1,0 +1,343 @@
+/* reset + base */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* colors */
+  --bg:          #0e0e10;
+  --bg2:         #1a1a1f;
+  --bg3:         #24242b;
+  --border:      #2e2e38;
+  --text:        #e8e6f0;
+  --text-muted:  #7a7890;
+  --accent:      #7c6ff7;       /* purple — original chords */
+  --mirror:      #3dcfab;       /* teal — mirror chords */
+  --amber:       #f0a030;       /* key note highlight */
+  --danger:      #e05c5c;       /* axis / stop button */
+
+  /* sizing */
+  --radius:      8px;
+  --key-w:       48px;
+  --key-h:       130px;
+  --black-w:     32px;
+  --black-h:     82px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+
+/* ── header ── */
+
+header {
+  padding: 32px 40px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+
+/* dim subtitle a bit */
+.subtitle {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+
+/* ── main layout ── */
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+
+/* ── controls bar ── */
+
+.controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.control-group label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+/* selects + number input share same look */
+select,
+input[type="number"] {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  padding: 6px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+select:hover,
+input[type="number"]:hover { border-color: var(--accent); }
+select:focus,
+input[type="number"]:focus { border-color: var(--accent); }
+
+input[type="number"] { width: 72px; }
+
+
+/* ── how to use ── */
+
+.how-to {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+}
+
+.how-to p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+
+/* ── keyboard ── */
+
+.keyboard-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  overflow-x: auto;           /* scroll on small screens */
+}
+
+/* piano container — relative so black keys can overlap */
+.keyboard {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  height: var(--key-h);
+  width: fit-content;
+  margin: 0 auto;
+  user-select: none;
+}
+
+/* white keys */
+.key-white {
+  position: relative;
+  width: var(--key-w);
+  height: var(--key-h);
+  background: #f0eef8;
+  border: 1px solid #b0aec8;
+  border-radius: 0 0 6px 6px;
+  cursor: pointer;
+  transition: background 0.08s;
+  z-index: 1;
+}
+
+.key-white:hover  { background: #ddd9f0; }
+.key-white.active { background: var(--accent); }
+
+/* black keys sit on top, pulled left to overlap white keys */
+.key-black {
+  position: absolute;
+  width: var(--black-w);
+  height: var(--black-h);
+  background: #1a1828;
+  border: 1px solid #0a0a12;
+  border-radius: 0 0 4px 4px;
+  cursor: pointer;
+  transition: background 0.08s;
+  z-index: 2;
+  top: 0;
+}
+
+.key-black:hover  { background: #2e2a50; }
+.key-black.active { background: var(--accent); }
+
+/* note label at bottom of white key */
+.key-label {
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* tonic highlight — marks the root of the chosen key */
+.key-white.tonic { background: #f5e8c0; }
+.key-black.tonic { background: #7a5a10; }
+
+
+/* ── progression section ── */
+
+.progression-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* two columns side by side */
+.progression-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.prog-column h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* original column accent */
+.prog-column:first-child h2 { color: var(--accent); }
+
+/* mirror column accent */
+.prog-column:last-child h2  { color: var(--mirror); }
+
+.chord-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* each chord chip */
+.chord-list li {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* original chips purple, mirror chips teal */
+#original-list li { border-color: var(--accent); color: var(--accent); }
+#mirror-list li   { border-color: var(--mirror); color: var(--mirror); }
+
+/* placeholder text when list empty */
+.empty-hint {
+  color: var(--text-muted) !important;
+  border: none !important;
+  font-weight: 400 !important;
+  font-style: italic;
+  font-size: 12px !important;
+}
+
+/* currently playing chord gets a glow */
+.chord-list li.playing {
+  background: var(--accent);
+  color: #0e0e10;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+#mirror-list li.playing {
+  background: var(--mirror);
+  color: #0e0e10;
+  box-shadow: 0 0 8px var(--mirror);
+}
+
+
+/* ── playback buttons ── */
+
+.progression-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+button:hover { background: var(--bg3); border-color: var(--accent); }
+
+/* play buttons get accent border */
+#btn-play-original { border-color: var(--accent); color: var(--accent); }
+#btn-play-mirror   { border-color: var(--mirror); color: var(--mirror); }
+#btn-play-both     { border-color: var(--amber);  color: var(--amber);  }
+
+/* stop is danger colored */
+#btn-stop { border-color: var(--danger); color: var(--danger); }
+#btn-stop:hover { background: var(--danger); color: #fff; }
+
+
+/* ── tonnetz ── */
+
+.tonnetz-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tonnetz-section h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+#tonnetz-canvas {
+  width: 100%;
+  height: 320px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: block;
+}
+
+
+/* ── responsive — narrow screens ── */
+
+@media (max-width: 640px) {
+  main { padding: 20px; }
+  .progression-display { grid-template-columns: 1fr; }
+  .controls-bar { gap: 12px; }
+}

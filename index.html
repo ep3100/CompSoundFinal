@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Negative Harmony Machine</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>Negative Harmony Machine</h1>
+    <p class="subtitle">Play a chord progression. Hear its mirror.</p>
+  </header>
+
+  <main>
+
+    <!-- ── CONTROLS BAR ── -->
+    <section class="controls-bar">
+
+      <div class="control-group">
+        <label for="key-select">Key</label>
+        <select id="key-select">
+          <option value="0">C</option>
+          <option value="1">C# / Db</option>
+          <option value="2">D</option>
+          <option value="3">D# / Eb</option>
+          <option value="4">E</option>
+          <option value="5">F</option>
+          <option value="6">F# / Gb</option>
+          <option value="7">G</option>
+          <option value="8">G# / Ab</option>
+          <option value="9">A</option>
+          <option value="10">A# / Bb</option>
+          <option value="11">B</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="octave-select">Octave</label>
+        <select id="octave-select">
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="waveform-select">Waveform</label>
+        <select id="waveform-select">
+          <option value="sine">Sine</option>
+          <option value="triangle" selected>Triangle</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="square">Square</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="chord-type-select">Chord type</label>
+        <select id="chord-type-select">
+          <option value="maj" selected>Major</option>
+          <option value="min">Minor</option>
+          <option value="dim">Diminished</option>
+          <option value="aug">Augmented</option>
+          <option value="maj7">Major 7th</option>
+          <option value="min7">Minor 7th</option>
+          <option value="dom7">Dominant 7th</option>
+          <option value="dim7">Diminished 7th</option>
+          <option value="hdim7">Half-diminished 7th</option>
+          <option value="minMaj7">Minor major 7th</option>
+          <option value="min6">Minor 6th</option>
+          <option value="maj6">Major 6th</option>
+          <option value="sus2">Sus2</option>
+          <option value="sus4">Sus4</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="tempo-input">BPM</label>
+        <input type="number" id="tempo-input" value="80" min="40" max="200" />
+      </div>
+
+    </section>
+
+    <!-- ── HOW TO USE ── -->
+    <section class="how-to">
+      <p>Pick a key, choose a chord type, then click any piano key to build a chord on that root. 
+        Right after pressing a note, hit "Add chord" to lock it into your chord — 
+        the mirror column updates automatically based on the selected key, i.e. it's a mirror of the entire progression,
+        not on a chord by chord basis. You can repeat this process to add more chords. 
+        The Tonnetz visualization will show the notes of the original and mirrored chord.</p>
+    </section>
+
+    <!-- ── KEYBOARD ── -->
+    <section class="keyboard-section">
+      <div class="keyboard" id="keyboard">
+        <!-- Keys injected by app.js -->
+      </div>
+    </section>
+
+    <!-- ── PROGRESSION BUILDER ── -->
+    <section class="progression-section">
+
+      <div class="progression-display">
+        <div class="prog-column">
+          <h2>Original</h2>
+          <ol id="original-list" class="chord-list">
+            <li class="empty-hint">Click keys above to add chords</li>
+          </ol>
+        </div>
+        <div class="prog-column">
+          <h2>Mirror</h2>
+          <ol id="mirror-list" class="chord-list">
+            <li class="empty-hint">Mirror will appear here</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="progression-controls">
+        <button id="btn-add-chord">Add chord</button>
+        <button id="btn-clear">Clear</button>
+        <button id="btn-play-original">▶ Play original</button>
+        <button id="btn-play-mirror">▶ Play mirror</button>
+        <button id="btn-play-both">▶ Play both</button>
+        <button id="btn-stop">■ Stop</button>
+      </div>
+
+    </section>
+
+    <!-- ── TONNETZ ── -->
+    <section class="tonnetz-section">
+      <h2>Tonnetz</h2>
+      <canvas id="tonnetz-canvas"></canvas>
+    </section>
+
+    <details style="background: #1a1a1f; border: 1px solid #2e2e38; border-radius: 8px; padding: 16px 20px; color: #e8e6f0; font-family: 'Inter', system-ui, sans-serif; line-height: 1.7; max-width: 760px;">
+    <summary style="font-size: 16px; font-weight: 600; cursor: pointer; color: #7c6ff7; outline: none;">
+        Blog Post
+    </summary>
+
+        <div style="margin-top: 20px; color: #d8d6e0;">
+
+            <h2 style="font-size: 18px; font-weight: 600; color: #e8e6f0; margin-top: 24px; margin-bottom: 12px;">Why I built it</h2>
+
+            <p style="margin-bottom: 14px;">
+            Negative harmony is one of those music theory concepts that's easy to describe and hard to feel.
+            You can read the rule — "reflect every pitch over an axis between the tonic and the fifth" — and still have no idea what it's actually 
+            going to sound like until you hear it. The classic Jacob Collier demos and live sessions detail this well, and I thought it'd be an interesting
+            project to implemented this visually for all to see.
+            </p>
+
+            <p style="margin-bottom: 14px;">
+            The Negative Harmony Machine is a web app where you input a chord progression on a piano keyboard, hear it played back through a WebAudio synth, 
+            and simultaneously see and hear its negative harmony transformation rendered on a Tonnetz lattice.
+            The goal was to make a piece of math (the TnI inversion operation from pitch-class set theory) into something you can actually play with.
+            </p>
+
+            <h2 style="font-size: 18px; font-weight: 600; color: #e8e6f0; margin-top: 28px; margin-bottom: 12px;">The math, briefly</h2>
+
+            <p style="margin-bottom: 14px;">
+            Negative harmony is just pitch inversion around an axis.
+            If you label the 12 pitch classes as integers 0 through 11 (C=0, C#=1, … B=11), and define an axis based on the tonic of your key — specifically 
+            <code style="background: #24242b; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">axis = (tonic + 7) % 12</code>, 
+            which sits halfway between the tonic and its perfect fifth — then for any note, its mirror is 
+            <code style="background: #24242b; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">(axis - note + 12) % 12</code>.
+            </p>
+
+            <p style="margin-bottom: 14px;">
+            That's it.
+            The whole transformation is one line of code.
+            Apply it to every note in a chord and you get the mirror chord.
+            Apply it to every chord in a progression and you get the negative harmony version of the whole piece.
+            The reason this produces musically coherent results rather than random noise is that the reflection preserves interval structure — 
+            a major third becomes a minor third, a perfect fifth stays a perfect fifth, and the internal "shape" of each chord is mirrored rather than scrambled.
+            It's the same TnI operation from set theory, applied with musical intent.
+            </p>
+
+            <h2 style="font-size: 18px; font-weight: 600; color: #e8e6f0; margin-top: 28px; margin-bottom: 12px;">Architecture</h2>
+
+            <p style="margin-bottom: 14px;">
+            The codebase is split into four ES modules with a deliberately tight separation of concerns:
+            </p>
+
+            <ul style="margin-bottom: 14px; padding-left: 20px;">
+            <li style="margin-bottom: 6px;">
+                <strong style="color: #7c6ff7;">theory.js</strong> — pure math.
+                Pitch class definitions, chord interval tables, the TnI inversion function, neo-Riemannian P/L/R operations, chord-name reverse lookup.
+            </li>
+            <li style="margin-bottom: 6px;">
+                <strong style="color: #7c6ff7;">audio.js</strong> — the WebAudio engine.
+                AudioContext lifecycle, oscillator + gain wiring, ADSR envelope shaping, chord playback, the step sequencer that drives progression playback.
+            </li>
+            <li style="margin-bottom: 6px;">
+                <strong style="color: #7c6ff7;">tonnetz.js</strong> — canvas rendering.
+                A class that owns the canvas element, generates the lattice's node positions and edges, and exposes a single 
+                <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">update()</code> 
+                method for changing what's highlighted.
+            </li>
+            <li style="margin-bottom: 6px;">
+                <strong style="color: #7c6ff7;">app.js</strong> — 
+                Owns the DOM, builds the piano keyboard, wires UI events to the other three modules, manages user-facing state.
+            </li>
+            </ul>
+
+            <p style="margin-bottom: 14px;">
+            The first three modules know nothing about the others.
+            <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">theory.js</code> 
+            doesn't know audio exists.
+            <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">audio.js</code> 
+            imports a couple of frequency conversion helpers from theory but never touches the DOM.
+            <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">tonnetz.js</code> 
+            imports pitch class names and is otherwise self-contained.
+            All the coordination happens in <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">
+                app.js</code>, which made debugging much easier — a bug was almost always traceable to one specific module.
+            </p>
+
+            <h2 style="font-size: 18px; font-weight: 600; color: #e8e6f0; margin-top: 28px; margin-bottom: 12px;">The audio engine</h2>
+
+            <p style="margin-bottom: 14px;">
+            Sound generation uses oscillator-based additive synthesis.
+            Each note in a chord gets its own 
+            <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">OscillatorNode</code> 
+            connected to a <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">GainNode</code> 
+            that shapes its ADSR envelope.
+            The gain nodes feed into a per-chord master, and all per-chord masters feed into a global master gain bus before reaching 
+            <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">audioContext.destination</code>.
+            </p>
+
+            <p style="margin-bottom: 14px;">
+            The single global master was added late after I noticed that 
+            <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">playBoth</code> 
+            mode — which stacks the original and mirror progressions on top of each other — was clipping badly.
+            With up to eight oscillators going at once, even with per-chord normalization, the summed signal was exceeding 0dBFS at the destination.
+            Routing everything through one master gain at 0.4 gave the signal chain enough headroom to handle the worst case cleanly.
+            </p>
+
+            <p style="margin-bottom: 14px;">
+            Stopping mid-playback also produces clicks if you just call 
+            <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">osc.stop()</code> 
+            while the gain node is still at full sustain.
+            The clean stop pattern is: cancel any scheduled gain values, take a sample of the current gain, ramp it to zero over a short interval (I used 80ms), 
+            then stop the oscillator just after the ramp completes.
+            </p>
+
+            <h2 style="font-size: 18px; font-weight: 600; color: #e8e6f0; margin-top: 28px; margin-bottom: 12px;">The Tonnetz renderer</h2>
+
+            <p style="margin-bottom: 14px;">
+            The Tonnetz is a 2D lattice in which every node is a pitch class, every triangle is a triad, and physical proximity corresponds to harmonic relationship.
+            Moving right one node is up a perfect fifth.
+            Moving up and to the right is up a major third.
+            Moving up and to the left is up a minor third.
+            Every upward-pointing triangle is a major triad, every downward-pointing triangle is a minor triad.
+            </p>
+
+            <p style="margin-bottom: 14px;">
+            For rendering, I generate node positions procedurally rather than hand-placing them.
+            Each node has a (row, col) and its pitch class is computed as 
+            <code style="background: #24242b; padding: 1px 4px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">((col * 7) + (row * 3)) % 12</code> 
+            — fifths going right, minor thirds going up.
+            The visual stagger of every other row (offsetting x by half a step) gives the lattice its hexagonal feel.
+            Edges are built by walking each node and connecting to its right, down-right, and down-left neighbors if they exist.
+            </p>
+
+            <p style="margin-bottom: 14px;">
+            The reflection axis is drawn as a vertical dashed line.
+            Rather than hardcoding its x position, I find all nodes whose pitch class matches the axis value and average their x coordinates — so the line automatically 
+            follows the axis when the key changes, with no separate state to keep in sync.
+            </p>
+
+
+            <h2 style="font-size: 18px; font-weight: 600; color: #e8e6f0; margin-top: 28px; margin-bottom: 12px;">Interaction design</h2>
+
+            <p style="margin-bottom: 14px;">
+            The biggest design question was how to let users input chords.
+            My first version had a piano keyboard where you'd click and hold multiple keys to build a chord, then click "Add chord" while still holding — which turned 
+            out to be impossible with a mouse, since mouseleave fires when you move toward the button.
+            I tried a few workarounds (click-to-toggle, computer keyboard mapping) and ultimately landed on a chord type selector: pick a quality 
+            (major, minor, dom7, half-diminished, etc.), then clicking any piano key plays the full chord with that note as the root.
+            This is faster than note-by-note input, sufficient for the kinds of progressions people actually want to test, and doesn't require any modifier keys or sustain logic.
+            </p>
+
+            <p style="margin-bottom: 14px;">
+            Reverse chord naming (mapping a set of pitch classes back to a chord symbol like "F minor" or "D half-diminished 7th") is done by brute force — 
+            for each chord type in my dictionary, try all 12 possible roots and check if any combination produces the input set.
+            With 12 chord types and 12 roots, that's 144 set-equality checks at worst, which is fine for a 3-7 note input.
+            </p>
+
+            <h2 style="font-size: 18px; font-weight: 600; color: #e8e6f0; margin-top: 28px; margin-bottom: 12px;">What I learned</h2>
+
+
+            <p style="margin-bottom: 14px;">
+            If I were going to keep developing this, the next step would be melody input — letting users sing or type a melodic line and hearing its negative harmony 
+            version note by note rather than just chord by chord.
+            Melodies expose the inversion more nakedly than harmony does, because there's no chordal context to absorb the strangeness.
+            I'd also love to add a tonnetz "flip" animation, where the lattice physically rotates around the axis when you toggle between original and mirror modes. There
+            are other visual changes and finicky things to worry about, but the overall project should be straight-forward to use
+            </p>
+
+        </div>
+    </details>
+
+  </main>
+
+  <script type="module" src="js/theory.js"></script>
+  <script type="module" src="js/audio.js"></script>
+  <script type="module" src="js/tonnetz.js"></script>
+  <script type="module" src="js/app.js"></script>
+
+</body>
+</html>
